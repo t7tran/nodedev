@@ -35,6 +35,8 @@ drm() {
 
 # run a container with current directory mapped to /pwd
 alias dr='docker run -it --rm -v "$PWD":/pwd:z'
+alias drs='docker run -it --rm -v "$PWD":/pwd:z --entrypoint sh'
+alias drb='docker run -it --rm -v "$PWD":/pwd:z --entrypoint bash'
 alias dru='docker run -u $(id -u):$(id -g) -it --rm -v "$PWD":/pwd:z'
 alias drw='docker run -it --rm -v "$PWD":/pwd:z -w /pwd'
 # execute a command inside a container
@@ -52,10 +54,42 @@ alias dce='docker-compose exec'
 alias dt='docker stack'
 alias dtd='docker stack deploy -c docker-compose.yml'
 
+# find image tags on docker hub
+dhub() {
+  image=$1
+  tag=$2
+  notfound="Image $image not found."
+  [[ $image == */* ]] || image=library/$image
+  url="https://hub.docker.com/v2/repositories/$image/tags/?page_size=100&page=1"
+  while [[ $url == http* ]]; do
+    json=`curl -s -H "Authorization: JWT " "$url"`
+    [[ $json == '{"detail": "'* ]] && echo $notfound && break
+    notfound=
+    if [[ -n $tag ]]; then
+      line=`echo $json | jq -r '.results[] | .name + " " + (.images[0].size | tostring)' | grep "^$tag "`
+      if [[ $? -eq 0 ]]; then
+        echo "$tag = `echo $line | grep -oP '[0-9]+$' | numfmt --to=iec-i`"
+        break
+      else
+        echo -n '.'
+      fi
+    else
+      echo $json | jq -r '.results[] | .name + " " + (.images[0].size | tostring)' | while IFS= read -r line; do
+        echo "`echo $line | cut -d ' ' -f 1` = `echo $line | grep -oP '[0-9]+$' | numfmt --to=iec-i`"
+      done
+    fi
+    url=`echo $json | jq -r '.next'`
+  done
+}
+
 # short-form of kubectl against current namespace
 alias k='kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE}'
 # list all resources of the current namespace
 alias ka='kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get all'
+
+kns() {
+  export KUBENAMESPACE=$1
+}
 
 # list all pods (or those matching given parameters) of current namespace
 kp() {
@@ -121,13 +155,22 @@ alias kpw='watch -tn1 kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get p
 #alias kpws='watch -tn1 kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get pods -o wide --sort-by=.status.startTime'
 kpws() {
   if [[ -z "$@" ]]; then
-    watch -ctn1 kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get pods -o wide --sort-by=.status.startTime
+    watch -ctn1 "kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get pods -o wide --sort-by=.status.startTime | awk {'print "'$1" " $2" " $3" " $4" " $5" " $6" " $7'"'} | column -t"
   else
-    watch -ctn1 "kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get pods -o wide --sort-by=.status.startTime | grep --color=always -E -- `echo $@ | tr ' ' '|'`"
+    filter=`echo "NAME $@" | tr ' ' '|'`
+    watch -ctn1 "kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} get pods -o wide --sort-by=.status.startTime | awk {'print "'$1" " $2" " $3" " $4" " $5" " $6" " $7'"'} | column -t | grep --color=always -E -- '$filter'"
   fi
 }
 # describe a resource
 alias kd='kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} describe'
+kdpo() {
+  checkconfig
+  checkarg "$1" "Parts of pod name is required"
+  name=`podname $@`
+  shift
+  kd po ${name:?No pod matched}
+}
+
 # create/update resources described in one or more yaml files
 alias kaf='kubectl ${KUBENAMESPACE:+--namespace $KUBENAMESPACE} apply -f'
 # delete resources described in one or more yaml files
@@ -177,7 +220,7 @@ kl() {
   checkarg "$1" "Parts of pod name is required"
   name=`podname $@`
   shift
-  k logs -f ${name:?No pod matched} --tail=200 $@
+  k logs -f ${name:?No pod matched} --tail=2000 $@
 }
 # view and follow log of the second most recent pod whose name matches the first parameter
 kl2() {
@@ -186,7 +229,7 @@ kl2() {
   a1=$1
   shift
   name=`podname $a1 2 $@`
-  k logs -f ${name:?No pod matched} --tail=200 $@
+  k logs -f ${name:?No pod matched} --tail=2000 $@
 }
 # view and follow log of the third most recent pod whose name matches the first parameter
 kl3() {
@@ -195,7 +238,7 @@ kl3() {
   a1=$1
   shift
   name=`podname $a1 3 $@`
-  k logs -f ${name:?No pod matched} --tail=200 $@
+  k logs -f ${name:?No pod matched} --tail=2000 $@
 }
 
 # run kubectl against all namespaces
@@ -238,6 +281,21 @@ kcpualloc() {
 
 kmemalloc() {
   kutil | grep % | awk '{print $5}' | awk '{ sum += $1 } END { if (NR > 0) { print sum/(NR*150), "%\n" } }'
+}
+
+alias h='helm'
+alias htf='helm template "../${PWD##*/}" --output-dir build -f'
+
+ht() {
+  if [[ -n "$@" ]]; then
+    helm template "$@"
+  elif [[ "$1" == '-f' && $# -eq 2 ]]; then
+    helm template "../${PWD##*/}" --output-dir build "$@"
+  elif [[ -d templates && -f Chart.yaml ]]; then
+    helm template "../${PWD##*/}" --output-dir build
+  else
+    echo "The current directory isn't a helm chart"
+  fi
 }
 
 # compute password hash using different algorithms
@@ -287,3 +345,5 @@ randompasswords() {
 erasedups() {
   tac $HISTFILE | awk '!x[$0]++' | tac | sponge $HISTFILE
 }
+
+alias ngserve='ng serve --host 0.0.0.0 --source-map=false --optimization=false'

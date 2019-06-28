@@ -8,6 +8,7 @@ RUN apk add --no-cache bash git ncurses mc && \
     ln -s /home/node/coolersport /home/node/.bash_it/themes/coolersport && \
     chown -R node:node /home/node && \
     chmod +x /entrypoint.sh && \
+    npm install -g @angular/cli && \
     su -s /bin/bash node -c 'export BASH_IT=/home/node/.bash_it && \
                              source /home/node/.bash_it/bash_it.sh && \
                              bash-it enable completion defaults dirs git npm && \

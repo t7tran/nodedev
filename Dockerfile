@@ -2,7 +2,7 @@ FROM node:lts-alpine
 
 COPY --chown=node:node ./rootfs /
 
-RUN apk add --no-cache bash git curl ncurses mc dpkg && \
+RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
 # install gosu
     dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" && \
     curl -fsSL "https://github.com/tianon/gosu/releases/download/1.11/gosu-$dpkgArch" -o /usr/local/bin/gosu && \

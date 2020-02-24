@@ -17,7 +17,9 @@ RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
 # install npm packages globally
     npm install -g @angular/cli && \
+    npm install -g @stencil/core && \
     npm install -g http-server && \
+    yarn global add polymer-cli && \
 # set up the machine
     cd /home/node && \
     gosu node git clone --depth=1 https://github.com/Bash-it/bash-it.git .bash_it && \

@@ -19,6 +19,7 @@ RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
     npm install -g @angular/cli && \
     npm install -g @stencil/core && \
     npm install -g http-server && \
+    npm install -g jshint && \
     yarn global add polymer-cli && \
 # set up the machine
     cd /home/node && \

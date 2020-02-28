@@ -3,6 +3,16 @@ FROM node:lts-alpine
 COPY --chown=node:node ./rootfs /
 
 RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
+# Installs latest Chromium package for testing
+# see https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#running-on-alpine
+    apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      freetype-dev \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont && \
 # install gosu
     dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" && \
     curl -fsSL "https://github.com/tianon/gosu/releases/download/1.11/gosu-$dpkgArch" -o /usr/local/bin/gosu && \

@@ -25,6 +25,9 @@ RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --no-cache --upgrade pip setuptools wheel && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
+# install ngrok & localtunnel
+    curl -fsSLo /tmp/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && unzip /tmp/ngrok.zip -d /usr/local/bin/ && \
+    npm install -g localtunnel && \
 # install npm packages globally
     npm install -g @angular/cli && \
     npm install -g @stencil/core && \

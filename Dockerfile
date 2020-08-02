@@ -15,7 +15,7 @@ RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
       ttf-freefont && \
 # install gosu
     dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" && \
-    curl -fsSL "https://github.com/tianon/gosu/releases/download/1.11/gosu-$dpkgArch" -o /usr/local/bin/gosu && \
+    curl -fsSL "https://github.com/tianon/gosu/releases/download/1.12/gosu-$dpkgArch" -o /usr/local/bin/gosu && \
     chmod +x /usr/local/bin/gosu && \
     gosu nobody true && \
 # install python3

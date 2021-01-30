@@ -18,6 +18,8 @@ RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
     curl -fsSL "https://github.com/tianon/gosu/releases/download/1.12/gosu-$dpkgArch" -o /usr/local/bin/gosu && \
     chmod +x /usr/local/bin/gosu && \
     gosu nobody true && \
+# install docker client
+    apk add --no-cache docker && \
 # install python3
     apk add --no-cache python3 && \
     if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi && \

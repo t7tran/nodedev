@@ -20,6 +20,7 @@ RUN apk add --no-cache bash git curl ncurses mc dpkg hstr && \
     gosu nobody true && \
 # install docker client
     apk add --no-cache docker && \
+	for gid in 497 998; do addgroup -g $gid docker$gid; addgroup node docker$gid; done && \
 # install python3
     apk add --no-cache python3 && \
     if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi && \

@@ -1,0 +1,12 @@
+FROM caddy:alpine as caddy
+
+FROM node:lts-alpine
+
+COPY --from=caddy /usr/bin/caddy /usr/bin/
+COPY --chown=node:node ./rootfs /
+
+RUN apk add --update bash && \
+    source /build.sh && \
+    rm -rf /build.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

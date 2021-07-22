@@ -31,6 +31,9 @@ rm -r /usr/lib/python*/ensurepip
 pip3 install --no-cache --upgrade pip setuptools wheel
 if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
 
+# install graphviz and openjdk for PlantUML
+apk add graphviz openjdk8
+
 # ensure the latest version of npm
 yarn global add npm
 

@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
-apk add git curl ncurses mc dpkg hstr
+apt update && apt upgrade -y && apt autoremove -y
+
+# apk add git curl ncurses mc dpkg hstr
+apt install -y vim git curl mc dpkg iputils-ping libncurses5-dev libncursesw5-dev
+
+# install hstr
+curl -fsSL https://github.com/dvorka/hstr/releases/download/2.3/hstr_2.3.0-1_amd64.deb -o /tmp/hstr.deb
+apt install -y libncursesw5 libtinfo5 readline-common libreadline7
+dpkg -i /tmp/hstr.deb
 
 # Installs latest Chromium package for testing
-# see https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#running-on-alpine
-apk add \
-      chromium \
-      nss \
-      freetype \
-      freetype-dev \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont
+apt install -y chromium chromium-l10n ca-certificates fonts-freefont-ttf libnss3 libharfbuzz-bin
+apt install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
 # install gosu
 dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
@@ -20,19 +21,29 @@ chmod +x /usr/local/bin/gosu
 gosu nobody true
 
 # install docker client
-apk add docker
+apt install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update && apt install -y docker-ce docker-ce-cli containerd.io
 for gid in 497 998; do addgroup -g $gid docker$gid; addgroup node docker$gid; done
 
-# install python3
-apk add python3
-if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi
-python3 -m ensurepip
-rm -r /usr/lib/python*/ensurepip
-pip3 install --no-cache --upgrade pip setuptools wheel
-if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
+# install python3 + pip
+apt install -y python3-pip
 
 # install graphviz and openjdk for PlantUML
-apk add graphviz openjdk8
+apt install -y graphviz
+# see https://adoptopenjdk.net/installation.html?variant=openjdk11&jvmVariant=hotspot#x64_linux-jre
+curl -fsSLo /opt/openjdk.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jre_x64_linux_hotspot_11.0.11_9.tar.gz
+mkdir /opt/openjdk
+tar xzf /opt/openjdk.tar.gz -C /opt/openjdk --strip-components 1
+echo 'PATH=/opt/openjdk/bin:$PATH' >> /home/node/.profile
 
 # ensure the latest version of npm
 yarn global add npm
@@ -42,13 +53,14 @@ curl -fsSLo /tmp/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-lin
 yarn global add localtunnel
 
 # install packages globally
-yarn global add @angular/cli
-yarn global add @stencil/core
-yarn global add http-server
-yarn global add jshint
-yarn global add uglify-js
-yarn global add polymer-cli
-yarn global add typescript
+yarn global add \
+                @angular/cli \
+                @stencil/core \
+                http-server \
+                jshint \
+                uglify-js \
+                polymer-cli \
+                typescript
 
 # set up the machine
 cd /home/node
@@ -60,9 +72,12 @@ gosu node bash -c 'export BASH_IT=/home/node/.bash_it
                    bash-it enable plugin base edit-mode-vi'
 
 # entrypoint
+gosu node mkdir /home/node/.cache
 chmod +x /entrypoint.sh
 
 # cleanup
-apk del dpkg
-rm -rf /apk /tmp/* /var/cache/apk/*
+apt remove -y dpkg
+apt clean
+apt autoremove -y
+rm -rf /var/lib/apt/lists/* /tmp/*
 yarn cache clean

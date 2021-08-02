@@ -1,12 +1,11 @@
-FROM caddy:alpine as caddy
+FROM caddy:2 as caddy
 
-FROM node:current-alpine
+FROM node:current-buster-slim
 
 COPY --from=caddy /usr/bin/caddy /usr/bin/
 COPY --chown=node:node ./rootfs /
 
-RUN apk add --update bash && \
-    source /build.sh && \
+RUN . /build.sh && \
     rm -rf /build.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

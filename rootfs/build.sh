@@ -56,11 +56,15 @@ yarn global add localtunnel
 yarn global add \
                 @angular/cli \
                 @stencil/core \
+                @ionic/cli \
                 http-server \
                 jshint \
                 uglify-js \
                 polymer-cli \
                 typescript
+
+# set ionic global config
+ionic config set -g npmClient yarn
 
 # set up the machine
 cd /home/node

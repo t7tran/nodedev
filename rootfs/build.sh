@@ -16,7 +16,7 @@ apt install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3
 
 # install gosu
 dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
-curl -fsSL "https://github.com/tianon/gosu/releases/download/1.12/gosu-$dpkgArch" -o /usr/local/bin/gosu
+curl -fsSL "https://github.com/tianon/gosu/releases/download/1.14/gosu-$dpkgArch" -o /usr/local/bin/gosu
 chmod +x /usr/local/bin/gosu
 gosu nobody true
 

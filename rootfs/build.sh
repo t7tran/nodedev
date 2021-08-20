@@ -64,13 +64,19 @@ yarn global add \
                 typescript
 
 # set ionic global config
+cd /tmp
+npm init -y
+npx tsc --init
 ionic config set -g npmClient yarn
 ionic config set -g telemetry false
-echo "$( jq '."telemetry.stencil" = false' /root/.ionic/config.json )" > /root/.ionic/config.json
+stencil telemetry off
 
+rm -rf package.json tsconfig.json
+gosu node npm init -y
+gosu node npx tsc --init
 gosu node ionic config set -g npmClient yarn
 gosu node ionic config set -g telemetry false
-echo "$( jq '."telemetry.stencil" = false' /home/node/.ionic/config.json )" > /home/node/.ionic/config.json
+gosu node stencil telemetry off
 
 # set up the machine
 cd /home/node

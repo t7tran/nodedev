@@ -3,7 +3,7 @@
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
-apt install -y vim git curl mc dpkg iputils-ping libncurses5-dev libncursesw5-dev
+apt install -y vim git curl mc jq dpkg iputils-ping libncurses5-dev libncursesw5-dev
 
 # install hstr
 curl -fsSL https://github.com/dvorka/hstr/releases/download/2.3/hstr_2.3.0-1_amd64.deb -o /tmp/hstr.deb
@@ -65,6 +65,12 @@ yarn global add \
 
 # set ionic global config
 ionic config set -g npmClient yarn
+ionic config set -g telemetry false
+echo "$( jq '."telemetry.stencil" = false' /root/.ionic/config.json )" > /root/.ionic/config.json
+
+gosu node ionic config set -g npmClient yarn
+gosu node ionic config set -g telemetry false
+echo "$( jq '."telemetry.stencil" = false' /home/node/.ionic/config.json )" > /home/node/.ionic/config.json
 
 # set up the machine
 cd /home/node

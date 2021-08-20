@@ -67,16 +67,16 @@ yarn global add \
 cd /tmp
 npm init -y
 npx tsc --init
+stencil telemetry off
 ionic config set -g npmClient yarn
 ionic config set -g telemetry false
-stencil telemetry off
 
 rm -rf package.json tsconfig.json
 gosu node npm init -y
 gosu node npx tsc --init
+gosu node stencil telemetry off
 gosu node ionic config set -g npmClient yarn
 gosu node ionic config set -g telemetry false
-gosu node stencil telemetry off
 
 # set up the machine
 cd /home/node

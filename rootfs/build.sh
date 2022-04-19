@@ -34,6 +34,9 @@ echo \
 apt update && apt install -y docker-ce docker-ce-cli containerd.io
 for gid in 497 998; do addgroup --gid $gid docker$gid; adduser node docker$gid; done
 
+# install mysql client
+apt install -y default-mysql-client
+
 # install python3 + pip
 apt install -y python3-pip
 

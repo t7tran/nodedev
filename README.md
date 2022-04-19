@@ -2,6 +2,11 @@
 
 NodeJS development environment
 
+### Tag to use
+
+Node LTS version: `lts`
+Node Latest/Current version: `current`
+
 ### Steps to use
 
 Go to your project folder and run:

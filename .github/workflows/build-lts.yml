@@ -32,9 +32,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}-${{ env.FLAVOR }}
+          key: ${{ runner.os }}-buildx-${{ env.FLAVOR }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-${{ env.FLAVOR }}
 
       - name: Docker meta
         id: meta

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# activate contrib
+sed -i 's/buster main/buster main contrib/g' /etc/apt/sources.list
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
@@ -40,13 +42,21 @@ apt install -y default-mysql-client
 # install python3 + pip
 apt install -y python3-pip
 
-# install graphviz and openjdk for PlantUML
-apt install -y graphviz
-# see https://adoptopenjdk.net/installation.html?variant=openjdk11&jvmVariant=hotspot#x64_linux-jre
-curl -fsSLo /opt/openjdk.tar.gz https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jre_x64_linux_hotspot_11.0.11_9.tar.gz
-mkdir /opt/openjdk
-tar xzf /opt/openjdk.tar.gz -C /opt/openjdk --strip-components 1
-echo 'PATH=/opt/openjdk/bin:$PATH' >> /home/node/.profile
+# install graphviz and java for PlantUML
+apt install -y graphviz default-jre
+
+# install LibreOffice
+curl -fsSLo /tmp/LibreOffice.tar.gz http://download.documentfoundation.org/libreoffice/stable/7.3.3/deb/x86_64/LibreOffice_7.3.3_Linux_x86-64_deb.tar.gz
+# Install required dependencies for LibreOffice 7.0+
+apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
+cd /tmp
+tar -zxvf LibreOffice.tar.gz
+cd LibreOffice*/DEBS
+dpkg -i *.deb
+# install Microsoft fonts
+apt install -y ttf-mscorefonts-installer
+# install fonts for special characters, such as chinese ideograms
+apt install -y fonts-wqy-zenhei
 
 # ensure the latest version of npm
 yarn global add npm

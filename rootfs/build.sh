@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 
+set -e
+
 # activate contrib
-sed -i 's/buster main/buster main contrib/g' /etc/apt/sources.list
+sed -i 's/bullseye main/bullseye main contrib/g' /etc/apt/sources.list
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
-apt install -y vim git curl mc jq dpkg iputils-ping libncurses5-dev libncursesw5-dev
+apt install -y vim git curl mc jq dpkg iputils-ping
+# libncurses5-dev libncursesw5-dev # was needed by hstr???
 
 # install hstr
-curl -fsSL https://github.com/dvorka/hstr/releases/download/2.3/hstr_2.3.0-1_amd64.deb -o /tmp/hstr.deb
-apt install -y libncursesw5 libtinfo5 readline-common libreadline7
-dpkg -i /tmp/hstr.deb
+#curl -fsSL https://github.com/dvorka/hstr/releases/download/2.4/hstr_2.4.0-1_amd64.deb -o /tmp/hstr.deb
+#apt install -y libncursesw5 libtinfo5 readline-common libreadline-dev
+#dpkg -i /tmp/hstr.deb
+apt install -y hstr
 
 # Installs latest Chromium package for testing
 apt install -y chromium chromium-l10n ca-certificates fonts-freefont-ttf libnss3 libharfbuzz-bin
-apt install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
 # install gosu
 dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
@@ -34,6 +38,7 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt update && apt install -y docker-ce docker-ce-cli containerd.io
+adduser node docker
 for gid in 497 998; do addgroup --gid $gid docker$gid; adduser node docker$gid; done
 
 # install mysql client
@@ -46,7 +51,7 @@ apt install -y python3-pip
 apt install -y graphviz default-jre
 
 # install LibreOffice
-curl -fsSLo /tmp/LibreOffice.tar.gz http://download.documentfoundation.org/libreoffice/stable/7.3.3/deb/x86_64/LibreOffice_7.3.3_Linux_x86-64_deb.tar.gz
+curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/7.3.4/deb/x86_64/LibreOffice_7.3.4_Linux_x86-64_deb.tar.gz
 # Install required dependencies for LibreOffice 7.0+
 apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
 cd /tmp
@@ -94,19 +99,18 @@ gosu node ionic config set -g telemetry false
 # set up the machine
 cd /home/node
 gosu node git clone --depth=1 https://github.com/Bash-it/bash-it.git .bash_it
-gosu node ln -s /home/node/coolersport /home/node/.bash_it/themes/coolersport
+gosu node ln -s /home/node/t7tran /home/node/.bash_it/themes/t7tran
 gosu node bash -c 'export BASH_IT=/home/node/.bash_it
                    source /home/node/.bash_it/bash_it.sh
                    bash-it enable completion defaults dirs git npm
                    bash-it enable plugin base edit-mode-vi'
 
 # entrypoint
-gosu node mkdir /home/node/.cache
+gosu node mkdir -p /home/node/.cache
 chmod +x /entrypoint.sh
 
 # cleanup
-apt remove -y dpkg
-apt clean
 apt autoremove -y
+apt clean
 rm -rf /var/lib/apt/lists/* /tmp/*
 yarn cache clean

@@ -41,6 +41,11 @@ apt update && apt install -y docker-ce docker-ce-cli containerd.io
 adduser node docker
 for gid in 497 998; do addgroup --gid $gid docker$gid; adduser node docker$gid; done
 
+# install docker compose
+apt install -y docker-compose-plugin
+curl -fsSL "https://github.com/docker/compose/releases/download/v2.7.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
 # install mysql client
 apt install -y default-mysql-client
 

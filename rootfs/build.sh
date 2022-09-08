@@ -7,7 +7,7 @@ sed -i 's/bullseye main/bullseye main contrib/g' /etc/apt/sources.list
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
-apt install -y vim git curl mc jq dpkg iputils-ping
+apt install -y vim git git-lfs curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
 
 # install hstr

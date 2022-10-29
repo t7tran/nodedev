@@ -89,14 +89,17 @@ yarn global add \
 # set ionic global config
 cd /tmp
 npm init -y
-npx tsc --init
+tsc --init
+touch stencil.config.js index.js
+echo 'exports.config = {};' > stencil.config.js
 stencil telemetry off
 ionic config set -g npmClient yarn
 ionic config set -g telemetry false
 
 rm -rf package.json tsconfig.json
+chown node:node stencil.config.js index.js
 gosu node npm init -y
-gosu node npx tsc --init
+gosu node tsc --init
 gosu node stencil telemetry off
 gosu node ionic config set -g npmClient yarn
 gosu node ionic config set -g telemetry false

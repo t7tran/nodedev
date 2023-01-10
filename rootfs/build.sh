@@ -69,7 +69,9 @@ apt install -y ttf-mscorefonts-installer
 apt install -y fonts-wqy-zenhei
 
 # ensure the latest version of npm
-yarn global add npm
+yarn global add npm pnpm
+# install pnpm
+yarn global add pnpm
 
 # install ngrok & localtunnel
 curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list && apt update && apt install ngrok

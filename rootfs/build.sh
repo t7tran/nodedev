@@ -114,13 +114,15 @@ gosu node bash -c 'export BASH_IT=/home/node/.bash_it
                    source /home/node/.bash_it/bash_it.sh
                    bash-it enable completion defaults dirs git npm
                    bash-it enable plugin base edit-mode-vi'
+git clone https://github.com/t7tran/aliases.git /home/node/t7tran/aliases
+ln -s /home/node/t7tran/aliases/.bash_aliases /home/node/.bash_aliases
 
 # entrypoint
 gosu node mkdir -p /home/node/.cache
 chmod +x /entrypoint.sh
 
 # setup terminal locale
-apt install locales
+apt install -y locales
 echo "LC_ALL=en_US.UTF-8" >> /etc/environment
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf

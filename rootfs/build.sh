@@ -119,6 +119,13 @@ gosu node bash -c 'export BASH_IT=/home/node/.bash_it
 gosu node mkdir -p /home/node/.cache
 chmod +x /entrypoint.sh
 
+# setup terminal locale
+apt install locales
+echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+locale-gen en_US.UTF-8
+
 # cleanup
 apt autoremove -y
 apt clean

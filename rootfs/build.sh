@@ -43,7 +43,7 @@ for gid in 497 998; do addgroup --gid $gid docker$gid; adduser node docker$gid; 
 
 # install docker compose
 apt install -y docker-compose-plugin
-curl -fsSL "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -fsSL "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 # install mysql client
@@ -56,7 +56,7 @@ apt install -y python3-pip
 apt install -y graphviz default-jre
 
 # install LibreOffice
-curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/7.5.2/deb/x86_64/LibreOffice_7.5.2_Linux_x86-64_deb.tar.gz
+curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/7.5.3/deb/x86_64/LibreOffice_7.5.3_Linux_x86-64_deb.tar.gz
 # Install required dependencies for LibreOffice 7.0+
 apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
 cd /tmp

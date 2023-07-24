@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+DOCKER_COMPOSE_VERSION=2.20.2
+LIBRE_OFFICE_VERSION=7.5.5
+
 set -e
 
 # activate contrib
@@ -43,7 +46,7 @@ for gid in 497 998; do addgroup --gid $gid docker$gid; adduser node docker$gid; 
 
 # install docker compose
 apt install -y docker-compose-plugin
-curl -fsSL "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -fsSL "https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 # install mysql client
@@ -56,7 +59,7 @@ apt install -y python3-pip
 apt install -y graphviz default-jre
 
 # install LibreOffice
-curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/7.5.4/deb/x86_64/LibreOffice_7.5.4_Linux_x86-64_deb.tar.gz
+curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/x86_64/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_x86-64_deb.tar.gz
 # Install required dependencies for LibreOffice 7.0+
 apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
 cd /tmp
@@ -69,7 +72,7 @@ apt install -y ttf-mscorefonts-installer
 apt install -y fonts-wqy-zenhei
 
 # ensure the latest version of npm
-yarn global add npm pnpm
+yarn global add npm
 # install pnpm
 yarn global add pnpm
 

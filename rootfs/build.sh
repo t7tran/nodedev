@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_VERSION=2.21.0
-LIBRE_OFFICE_VERSION=7.6.1
+DOCKER_COMPOSE_VERSION=2.23.0
+LIBRE_OFFICE_VERSION=7.6.2
 
 set -e
 
@@ -25,7 +25,7 @@ apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libn
 
 # install gosu
 dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
-curl -fsSL "https://github.com/tianon/gosu/releases/download/1.16/gosu-$dpkgArch" -o /usr/local/bin/gosu
+curl -fsSL "https://github.com/tianon/gosu/releases/download/1.17/gosu-$dpkgArch" -o /usr/local/bin/gosu
 chmod +x /usr/local/bin/gosu
 gosu nobody true
 

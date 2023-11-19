@@ -52,6 +52,9 @@ chmod +x /usr/local/bin/docker-compose
 # install mysql client
 apt install -y default-mysql-client
 
+# install postgresql client
+apt install -y postgresql-client
+
 # install python3 + pip
 apt install -y python3-pip
 

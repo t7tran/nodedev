@@ -1,6 +1,6 @@
 FROM caddy:2 as caddy
 
-FROM node:current-bullseye-slim
+FROM node:current-bookworm-slim
 
 COPY --from=caddy /usr/bin/caddy /usr/bin/
 COPY --chown=node:node ./rootfs /

@@ -6,7 +6,7 @@ LIBRE_OFFICE_VERSION=7.6.2
 set -e
 
 # activate contrib
-sed -i 's/bullseye main/bullseye main contrib/g' /etc/apt/sources.list
+sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
@@ -42,7 +42,7 @@ echo \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt update && apt install -y docker-ce docker-ce-cli containerd.io
 adduser node docker
-for gid in 497 998; do addgroup --gid $gid docker$gid; adduser node docker$gid; done
+for gid in 497; do addgroup --gid $gid docker$gid; adduser node docker$gid; done
 
 # install docker compose
 apt install -y docker-compose-plugin

@@ -42,7 +42,14 @@ echo \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt update && apt install -y docker-ce docker-ce-cli containerd.io
 adduser node docker
-for gid in 497; do addgroup --gid $gid docker$gid; adduser node docker$gid; done
+for gid in 497 997 998 999; do
+  groupname=`getent group $gid || true`
+  if [[ -z "$groupname" ]]; then
+    groupname=docker$gid
+    addgroup --gid $gid docker$gid
+  fi
+  adduser node ${groupname%%:*} &>/dev/null || true
+done
 
 # install docker compose
 apt install -y docker-compose-plugin

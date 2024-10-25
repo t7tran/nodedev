@@ -101,6 +101,8 @@ yarn global add \
                 uglify-js \
                 polymer-cli \
                 typescript
+# FIXME minizlib@3.0.1 breaks npm
+yarn global add minizlib@3.0.0
 
 # set ionic global config
 cd /tmp

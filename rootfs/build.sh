@@ -2,6 +2,7 @@
 
 DOCKER_COMPOSE_VERSION=2.35.1
 LIBRE_OFFICE_VERSION=25.2.3
+NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 
 set -e
 
@@ -82,7 +83,9 @@ apt install -y ttf-mscorefonts-installer
 apt install -y fonts-wqy-zenhei
 
 # ensure the latest version of npm
-yarn global add npm
+if [[ $NODE_MAJOR_VERSION -gt 18 ]]; then
+  yarn global add npm
+fi
 # install pnpm
 yarn global add pnpm
 

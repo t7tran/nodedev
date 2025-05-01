@@ -1,4 +1,4 @@
-name: Build LTS
+name: Build v20
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
-  FLAVOR: lts
+  FLAVOR: 20
 
 jobs:
   build:

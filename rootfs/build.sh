@@ -111,6 +111,7 @@ yarn global add minizlib@3.0.0
 cd /tmp
 npm init -y
 tsc --init
+sed -i '/noUncheckedSideEffectImports/d' tsconfig.json # stencil doesn't support this option yet
 touch stencil.config.js index.js
 echo 'exports.config = {};' > stencil.config.js
 stencil telemetry off
@@ -121,6 +122,7 @@ rm -rf package.json tsconfig.json
 chown node:node stencil.config.js index.js
 gosu node npm init -y
 gosu node tsc --init
+gosu node sed -i '/noUncheckedSideEffectImports/d' tsconfig.json # stencil doesn't support this option yet
 gosu node stencil telemetry off
 gosu node ionic config set -g npmClient yarn
 gosu node ionic config set -g telemetry false

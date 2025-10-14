@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_VERSION=2.39.2
-LIBRE_OFFICE_VERSION=25.8.1
+DOCKER_COMPOSE_VERSION=2.40.0
+LIBRE_OFFICE_VERSION=25.8.2
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 
 set -e
@@ -15,9 +15,6 @@ apt install -y vim git git-lfs git-credential-oauth curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
 
 # install hstr
-#curl -fsSL https://github.com/dvorka/hstr/releases/download/2.4/hstr_2.4.0-1_amd64.deb -o /tmp/hstr.deb
-#apt install -y libncursesw5 libtinfo5 readline-common libreadline-dev
-#dpkg -i /tmp/hstr.deb
 apt install -y hstr
 
 # Installs latest Chromium package for testing
@@ -26,7 +23,7 @@ apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libn
 
 # install gosu
 dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
-curl -fsSL "https://github.com/tianon/gosu/releases/download/1.17/gosu-$dpkgArch" -o /usr/local/bin/gosu
+curl -fsSL "https://github.com/tianon/gosu/releases/download/1.19/gosu-$dpkgArch" -o /usr/local/bin/gosu
 chmod +x /usr/local/bin/gosu
 gosu nobody true
 

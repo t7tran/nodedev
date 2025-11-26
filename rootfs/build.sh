@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_VERSION=2.40.0
-LIBRE_OFFICE_VERSION=25.8.2
+DOCKER_COMPOSE_VERSION=2.40.3
+LIBRE_OFFICE_VERSION=25.8.3
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 
 set -e

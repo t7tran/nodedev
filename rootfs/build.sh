@@ -99,7 +99,6 @@ yarn global add \
                 http-server \
                 jshint \
                 uglify-js \
-                polymer-cli \
                 @google/gemini-cli \
                 typescript
 # FIXME minizlib@3.0.1 breaks npm

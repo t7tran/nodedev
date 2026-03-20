@@ -96,6 +96,7 @@ yarn global add \
                 @angular/cli \
                 @stencil/core \
                 @ionic/cli \
+                playwright \
                 http-server \
                 jshint \
                 uglify-js \
@@ -103,6 +104,8 @@ yarn global add \
                 typescript
 # FIXME minizlib@3.0.1 breaks npm
 yarn global add minizlib@3.0.0
+# install playwright deps
+playwright install chrome --with-deps
 
 # set ionic global config
 cd /tmp

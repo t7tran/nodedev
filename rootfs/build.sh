@@ -86,10 +86,10 @@ fi
 # install pnpm
 yarn global add pnpm
 
-# install ngrok, localtunnel, and tmate
-curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list && apt update && apt install ngrok
-yarn global add localtunnel
-apt install -y tmate
+# install cloudflared, and tmate
+curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg > /usr/share/keyrings/cloudflare-main.gpg
+echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared noble main' > /etc/apt/sources.list.d/cloudflared.list
+apt update && apt install -y cloudflared tmate
 
 # install packages globally
 yarn global add \

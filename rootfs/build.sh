@@ -2,6 +2,7 @@
 
 DOCKER_COMPOSE_VERSION=5.1.1
 LIBRE_OFFICE_VERSION=26.2.1
+YQ_VERSION=4.52.4
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 
 set -e
@@ -13,6 +14,10 @@ apt update && apt upgrade -y && apt autoremove -y
 # apk add git curl ncurses mc dpkg hstr
 apt install -y vim git git-lfs git-credential-oauth curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
+
+# install yq
+curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_amd64 -o /usr/local/bin/yq
+chmod +x /usr/local/bin/yq
 
 # install hstr
 apt install -y hstr

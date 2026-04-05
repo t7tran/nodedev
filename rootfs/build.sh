@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DOCKER_COMPOSE_VERSION=5.1.1
-LIBRE_OFFICE_VERSION=26.2.1
+LIBRE_OFFICE_VERSION=26.2.2
 YQ_VERSION=4.52.5
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 

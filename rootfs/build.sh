@@ -2,7 +2,7 @@
 
 DOCKER_COMPOSE_VERSION=5.1.1
 LIBRE_OFFICE_VERSION=26.2.1
-YQ_VERSION=4.52.4
+YQ_VERSION=4.52.5
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 
 set -e
@@ -105,7 +105,6 @@ yarn global add \
                 http-server \
                 jshint \
                 uglify-js \
-                @google/gemini-cli \
                 typescript
 # FIXME minizlib@3.0.1 breaks npm
 yarn global add minizlib@3.0.0

@@ -1,4 +1,4 @@
-name: Build v20
+name: Build v22
 
 on:
   push:

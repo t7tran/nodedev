@@ -7,6 +7,8 @@ NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 
 set -e
 
+dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
+
 # activate contrib
 sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
@@ -16,7 +18,7 @@ apt install -y vim git git-lfs git-credential-oauth curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
 
 # install yq
-curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_amd64 -o /usr/local/bin/yq
+curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_${dpkgArch} -o /usr/local/bin/yq
 chmod +x /usr/local/bin/yq
 
 # install hstr
@@ -27,7 +29,6 @@ apt install -y chromium chromium-l10n ca-certificates fonts-freefont-ttf libnss3
 apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
 # install gosu
-dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
 curl -fsSL "https://github.com/tianon/gosu/releases/download/1.19/gosu-$dpkgArch" -o /usr/local/bin/gosu
 chmod +x /usr/local/bin/gosu
 gosu nobody true
@@ -72,7 +73,14 @@ apt install -y python3-pip
 apt install -y graphviz default-jre
 
 # install LibreOffice
-curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/x86_64/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_x86-64_deb.tar.gz
+if [ "$dpkgArch" = "arm64" ]; then
+  LO_DIR_ARCH="aarch64"
+  LO_FILE_ARCH="aarch64"
+else
+  LO_DIR_ARCH="x86_64"
+  LO_FILE_ARCH="x86-64"
+fi
+curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/${LO_DIR_ARCH}/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_${LO_FILE_ARCH}_deb.tar.gz
 # Install required dependencies for LibreOffice 7.0+
 apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
 cd /tmp

@@ -117,7 +117,11 @@ yarn global add \
 # FIXME minizlib@3.0.1 breaks npm
 yarn global add minizlib@3.0.0
 # install playwright deps
-playwright install chrome --with-deps
+if [ "$dpkgArch" = "arm64" ]; then
+  playwright install chromium --with-deps
+else
+  playwright install chrome --with-deps
+fi
 
 # set ionic global config
 cd /tmp

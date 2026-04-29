@@ -4,6 +4,7 @@ DOCKER_COMPOSE_VERSION=5.1.1
 LIBRE_OFFICE_VERSION=26.2.2
 YQ_VERSION=4.52.5
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
+GIT_CREDENTIAL_OAUTH_VERSION=0.17.2
 
 set -e
 
@@ -14,8 +15,11 @@ sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
-apt install -y vim git git-lfs git-credential-oauth curl mc jq dpkg iputils-ping
+apt install -y vim git git-lfs curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
+
+# install git-credential-oauth
+curl -fsSL https://github.com/hickford/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
 
 # install yq
 curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_${dpkgArch} -o /usr/local/bin/yq

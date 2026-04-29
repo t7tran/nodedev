@@ -123,6 +123,9 @@ else
   playwright install chrome --with-deps
 fi
 
+# install code-server
+curl -fsSL https://code-server.dev/install.sh | sh
+
 # set ionic global config
 cd /tmp
 npm init -y

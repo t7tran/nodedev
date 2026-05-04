@@ -70,6 +70,9 @@ apt install -y default-mysql-client
 # install postgresql client
 apt install -y postgresql-client
 
+# install sqlite3 for development
+apt install -y sqlite3
+
 # install python3 + pip
 apt install -y python3-pip
 

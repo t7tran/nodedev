@@ -100,11 +100,9 @@ apt install -y ttf-mscorefonts-installer
 apt install -y fonts-wqy-zenhei
 
 # ensure the latest version of npm
-if [[ $NODE_MAJOR_VERSION -gt 18 ]]; then
-  yarn global add npm
-fi
+npm i -g npm
 # install pnpm
-yarn global add pnpm
+npm i -g pnpm
 
 # install cloudflared, and tmate
 curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg > /usr/share/keyrings/cloudflare-main.gpg
@@ -112,17 +110,17 @@ echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudf
 apt update && apt install -y cloudflared tmate
 
 # install packages globally
-yarn global add \
-                @angular/cli \
-                @stencil/core \
-                @ionic/cli \
-                playwright \
-                http-server \
-                jshint \
-                uglify-js \
-                typescript
+npm i -g \
+          @angular/cli \
+          @stencil/core \
+          @ionic/cli \
+          playwright \
+          http-server \
+          jshint \
+          uglify-js \
+          typescript
 # FIXME minizlib@3.0.1 breaks npm
-yarn global add minizlib@3.0.0
+npm i -g minizlib@3.0.0
 # install playwright deps
 if [ "$dpkgArch" = "arm64" ]; then
   playwright install chromium --with-deps
@@ -141,7 +139,7 @@ sed -i '/noUncheckedSideEffectImports/d' tsconfig.json # stencil doesn't support
 touch stencil.config.js index.js
 echo 'exports.config = {};' > stencil.config.js
 stencil telemetry off
-ionic config set -g npmClient yarn
+ionic config set -g npmClient npm
 ionic config set -g telemetry false
 
 rm -rf package.json tsconfig.json
@@ -150,7 +148,7 @@ gosu node npm init -y
 gosu node tsc --init
 gosu node sed -i '/noUncheckedSideEffectImports/d' tsconfig.json # stencil doesn't support this option yet
 gosu node stencil telemetry off
-gosu node ionic config set -g npmClient yarn
+gosu node ionic config set -g npmClient npm
 gosu node ionic config set -g telemetry false
 
 # set up the machine
@@ -179,4 +177,4 @@ locale-gen en_US.UTF-8
 apt autoremove -y
 apt clean
 rm -rf /var/lib/apt/lists/* /tmp/*
-yarn cache clean
+npm cache clean --force

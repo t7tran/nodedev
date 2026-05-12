@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Google Chrome
+Exec=/usr/bin/google-chrome-stable %U
+Type=Application
+MimeType=x-scheme-handler/http;x-scheme-handler/https;
+Categories=Network;WebBrowser;
+StartupNotify=true
+Terminal=false
+Icon=google-chrome

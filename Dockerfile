@@ -7,7 +7,10 @@ FROM node:${NODE_VERSION:?}-bookworm-slim
 COPY --from=caddy /usr/bin/caddy /usr/bin/
 COPY --chown=node:node ./rootfs /
 
-ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/node/.npm-packages/bin
+ENV PATH=/home/node/.npm-packages/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    DISPLAY=:0 \
+    RESOLUTION=1280x720 \
+    TZ=Australia/Melbourne
 
 RUN . /build.sh && \
     rm -rf /build.sh

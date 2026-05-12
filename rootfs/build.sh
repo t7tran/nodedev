@@ -15,7 +15,7 @@ sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses mc dpkg hstr
-apt install -y vim git git-lfs curl mc jq dpkg iputils-ping
+apt install -y vim tilix git git-lfs curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
 
 # install git-credential-oauth
@@ -130,6 +130,16 @@ fi
 
 # install code-server
 curl -fsSL https://code-server.dev/install.sh | sh
+
+# support for remote desktop via browser (novnc)
+export DEBIAN_FRONTEND=noninteractive
+apt install -y  tzdata keyboard-configuration \
+                xvfb dbus-x11 x11vnc openssl xfce4 adwaita-icon-theme supervisor \
+                zenity
+# hacky - to get chrome started properly in xfce environment, i.e. exo-open https://google.com.au
+chromebin=$(realpath `which google-chrome`)
+sed -i '/exec -a/ d' "$chromebin"
+echo 'exec -a "$0" "$HERE/chrome" --no-sandbox --disable-fre --no-default-browser-check --no-first-run --password-store=basic "$@"' >> "$chromebin"
 
 # set ionic global config
 cd /tmp

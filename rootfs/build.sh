@@ -4,7 +4,7 @@ DOCKER_COMPOSE_VERSION=5.1.1
 LIBRE_OFFICE_VERSION=26.2.3
 YQ_VERSION=4.53.2
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
-GIT_CREDENTIAL_OAUTH_VERSION=0.17.2
+GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
 
 set -e
 
@@ -19,7 +19,8 @@ apt install -y vim tilix git git-lfs curl mc jq dpkg iputils-ping
 # libncurses5-dev libncursesw5-dev # was needed by hstr???
 
 # install git-credential-oauth
-curl -fsSL https://github.com/hickford/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
+# curl -fsSL https://github.com/hickford/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
+curl -fsSL https://github.com/t7tran/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
 
 # install yq
 curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_${dpkgArch} -o /usr/local/bin/yq

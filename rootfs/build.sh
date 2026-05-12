@@ -171,9 +171,10 @@ if [[ "$VARIANT" != "slim" ]]; then
 fi
 
 # hacky - to get chrome started properly in xfce environment, i.e. exo-open https://google.com.au
-chromebin=$(realpath `which google-chrome`)
-sed -i '/exec -a/ d' "$chromebin"
-echo 'exec -a "$0" "$HERE/chrome" --no-sandbox --disable-fre --no-default-browser-check --no-first-run --password-store=basic "$@"' >> "$chromebin"
+if [[ -x /opt/google/chrome/google-chrome ]]; then
+  sed -i '/exec -a/ d' /opt/google/chrome/google-chrome
+  echo 'exec -a "$0" "$HERE/chrome" --no-sandbox --disable-fre --no-default-browser-check --no-first-run --password-store=basic "$@"' >> /opt/google/chrome/google-chrome
+fi
 
 if [[ "$VARIANT" != "slim" ]]; then
   # set ionic global config

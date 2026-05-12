@@ -1,4 +1,4 @@
-name: Build LTS
+name: Build LTS Slim
 
 on:
   push:

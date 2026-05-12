@@ -124,7 +124,7 @@ if [[ "$VARIANT" != "slim" ]]; then
 fi
 
 # ensure the latest version of npm
-npm i -g npm
+curl -L https://www.npmjs.com/install.sh | sh
 # install pnpm
 npm i -g pnpm
 

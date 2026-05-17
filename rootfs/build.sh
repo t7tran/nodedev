@@ -158,12 +158,13 @@ else
 fi
 
 if [[ "$VARIANT" != "slim" ]]; then
+  # certutil is needed to import certificates into chrome NSS trust store
+  apt install -y libnss3-tools
+
   # install code-server
   curl -fsSL https://code-server.dev/install.sh | sh
-fi
 
-if [[ "$VARIANT" != "slim" ]]; then
-  # support for remote desktop via browser (novnc)
+  # support for remote desktop via browser
   export DEBIAN_FRONTEND=noninteractive
   apt install -y  tzdata keyboard-configuration \
                   xvfb dbus-x11 x11vnc openssl xfce4 adwaita-icon-theme supervisor \

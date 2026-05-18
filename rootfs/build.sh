@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 DOCKER_COMPOSE_VERSION=5.1.1
-LIBRE_OFFICE_VERSION=26.2.3
-YQ_VERSION=4.53.2
-NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
+LIBRE_OFFICE_VERSION=26.2.3
+NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
+TTYD_VERSION=1.7.7
+YQ_VERSION=4.53.2
 VARIANT=${1:-full}
 
 set -e
@@ -163,6 +164,14 @@ if [[ "$VARIANT" != "slim" ]]; then
 
   # install code-server
   curl -fsSL https://code-server.dev/install.sh | sh
+
+  # install ttyd for terminal over http
+  if [ "$dpkgArch" = "arm64" ]; then
+    curl -fsSLo /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION:?}/ttyd.aarch64
+  else
+    curl -fsSLo /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION:?}/ttyd.x86_64
+  fi
+  chmod +x /usr/local/bin/ttyd
 
   # support for remote desktop via browser
   export DEBIAN_FRONTEND=noninteractive

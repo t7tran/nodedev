@@ -137,6 +137,15 @@ if [[ "$VARIANT" == "full" ]]; then
 fi
 
 if [[ "$VARIANT" != "slim" ]]; then
+  # install gcloud SDK -----------------------------------------------------
+  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+  apt update && apt install -y google-cloud-sdk google-cloud-sdk-gke-gcloud-auth-plugin
+  gosu node gcloud config set core/disable_usage_reporting true
+  gosu node gcloud config set component_manager/disable_update_check true
+  gosu node gcloud config set metrics/environment github_docker_image
+  echo -e '[compute]\ngce_metadata_read_timeout_sec = 30' >> /usr/lib/google-cloud-sdk/properties
+
   # install packages globally
   npm i -g \
             @angular/cli \

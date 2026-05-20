@@ -170,6 +170,8 @@ if [[ "$VARIANT" != "slim" ]]; then
   echo "deb [signed-by=/usr/share/keyrings/claude-desktop.gpg arch=amd64,arm64] https://pkg.claude-desktop-debian.dev stable main" | tee /etc/apt/sources.list.d/claude-desktop.list
   apt update
   apt install -y claude-desktop
+  # fix claude-desktop to run in container as non-root
+  sed -i 's/"$electron_exec" "/"$electron_exec" --no-sandbox "/g' /usr/bin/claude-desktop
 
   # install ttyd for terminal over http
   if [ "$dpkgArch" = "arm64" ]; then

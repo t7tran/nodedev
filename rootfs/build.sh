@@ -159,6 +159,9 @@ if [[ "$VARIANT" != "slim" ]]; then
   npm i -g minizlib@3.0.0
 fi
 
+# install antigravity cli
+curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir /usr/local/bin
+
 # install playwright & deps
 npm i -g playwright
 if [ "$dpkgArch" = "arm64" ]; then

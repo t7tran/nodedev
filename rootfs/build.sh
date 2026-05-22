@@ -197,7 +197,8 @@ if [[ "$VARIANT" != "slim" ]]; then
   export DEBIAN_FRONTEND=noninteractive
   apt install -y  tzdata keyboard-configuration \
                   xvfb dbus-x11 x11vnc openssl xfce4 adwaita-icon-theme supervisor \
-                  zenity
+                  zenity \
+                  thunar-archive-plugin
 fi
 
 # hacky - to get chrome started properly in xfce environment, i.e. exo-open https://google.com.au

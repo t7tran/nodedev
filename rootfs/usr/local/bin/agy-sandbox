@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Start and unlock the gnome-keyring-daemon headlessly with a blank password
+eval "$(echo "" | gnome-keyring-daemon --unlock --control-directory ${HOME:?}/.cache/agy-keyring)"
+eval "$(echo "" | gnome-keyring-daemon --start  --control-directory ${HOME:?}/.cache/agy-keyring)"
+
+# Execute the main command
+exec agy "$@"

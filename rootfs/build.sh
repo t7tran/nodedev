@@ -161,6 +161,8 @@ fi
 
 # install antigravity cli
 curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir /usr/local/bin
+# install keyring required for antigravity cli auth token storage
+apt install -y dbus-x11 gnome-keyring libsecret-tools
 
 # install playwright & deps
 npm i -g playwright

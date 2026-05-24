@@ -164,6 +164,9 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir /usr/loc
 # install keyring required for antigravity cli auth token storage
 apt install -y dbus-x11 gnome-keyring libsecret-tools
 
+# install uv - for installing tools like crewai
+curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh
+
 # install playwright & deps
 npm i -g playwright
 if [ "$dpkgArch" = "arm64" ]; then

@@ -161,8 +161,10 @@ fi
 
 # install antigravity cli
 curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir /usr/local/bin
-# install keyring required for antigravity cli auth token storage
-apt install -y dbus-x11 gnome-keyring libsecret-tools
+if [[ "$VARIANT" == "slim" ]]; then
+  # install keyring required for antigravity cli auth token storage
+  apt install -y dbus-x11 gnome-keyring libsecret-tools
+fi
 
 # install uv - for installing tools like crewai
 curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh

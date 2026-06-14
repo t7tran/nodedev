@@ -190,6 +190,8 @@ if [[ "$VARIANT" != "slim" ]]; then
   apt update
   apt install -y codium
   sed -i 's/"$ELECTRON" "$CLI"/"$ELECTRON" "$CLI" --no-sandbox/g' /usr/share/codium/bin/codium
+  sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium.desktop
+  sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium-url-handler.desktop
 
   # install claude-desktop
   curl -fsSL https://pkg.claude-desktop-debian.dev/KEY.gpg | gpg --dearmor -o /usr/share/keyrings/claude-desktop.gpg

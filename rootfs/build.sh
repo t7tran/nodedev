@@ -193,13 +193,21 @@ if [[ "$VARIANT" != "slim" ]]; then
   sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium.desktop
   sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium-url-handler.desktop
 
-  # install claude-desktop
-  curl -fsSL https://pkg.claude-desktop-debian.dev/KEY.gpg | gpg --dearmor -o /usr/share/keyrings/claude-desktop.gpg
-  echo "deb [signed-by=/usr/share/keyrings/claude-desktop.gpg arch=amd64,arm64] https://pkg.claude-desktop-debian.dev stable main" | tee /etc/apt/sources.list.d/claude-desktop.list
+  # install claude-desktop-bin (community Linux packaging: https://github.com/patrickjaja/claude-desktop-bin)
+  mkdir -p /etc/apt/keyrings
+  curl -fsSL https://patrickjaja.github.io/claude-desktop-bin/gpg-key.asc | gpg --dearmor -o /etc/apt/keyrings/claude-desktop.gpg
+  chmod 644 /etc/apt/keyrings/claude-desktop.gpg
+  cat > /etc/apt/sources.list.d/claude-desktop.sources <<EOF
+Types: deb
+URIs: https://patrickjaja.github.io/claude-desktop-bin/deb/
+Suites: ./
+Signed-By: /etc/apt/keyrings/claude-desktop.gpg
+Architectures: ${dpkgArch}
+EOF
   apt update
-  apt install -y claude-desktop
+  apt install -y claude-desktop-bin
   # fix claude-desktop to run in container as non-root
-  sed -i 's/"$electron_exec" "/"$electron_exec" --no-sandbox "/g' /usr/bin/claude-desktop
+  sed -i "/ELECTRON_ARGS=()/a ELECTRON_ARGS+=('--no-sandbox')" /usr/bin/claude-desktop
 
   # install ttyd for terminal over http
   if [ "$dpkgArch" = "arm64" ]; then

@@ -4,9 +4,10 @@ DOCKER_COMPOSE_VERSION=5.1.4
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
 LIBRE_OFFICE_VERSION=26.2.4
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
+SUPERCRONIC_VERSION=0.2.46
 TTYD_VERSION=1.7.7
-YQ_VERSION=4.53.3
 VARIANT=${1:-full}
+YQ_VERSION=4.53.3
 
 set -e
 
@@ -19,29 +20,19 @@ apt update && apt upgrade -y && apt autoremove -y
 # apk add git curl ncurses dpkg hstr
 apt install -y git git-lfs curl jq dpkg iputils-ping
 
-if [[ "$VARIANT" != "slim" ]]; then
-  apt install -y vim tilix mc
-fi
-
-if [[ "$VARIANT" != "slim" ]]; then
-  # install git-credential-oauth
-  # curl -fsSL https://github.com/hickford/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
-  curl -fsSL https://github.com/t7tran/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
-fi
-
 # install yq
 curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_${dpkgArch} -o /usr/local/bin/yq
 chmod +x /usr/local/bin/yq
 
 if [[ "$VARIANT" != "slim" ]]; then
-  # install hstr
-  apt install -y hstr
-fi
+  apt install -y hstr mc tilix vim
 
-if [[ "$VARIANT" == "full" ]]; then
-  # Installs latest Chromium package for testing
-  apt install -y chromium chromium-l10n ca-certificates fonts-freefont-ttf libnss3 libharfbuzz-bin
-  apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth
+  curl -fsSL https://github.com/aptible/supercronic/releases/download/v${SUPERCRONIC_VERSION:?}/supercronic-linux-amd64 -o /usr/local/bin/supercronic
+  chmod +x /usr/local/bin/supercronic
+
+  # install git-credential-oauth
+  # curl -fsSL https://github.com/hickford/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
+  curl -fsSL https://github.com/t7tran/git-credential-oauth/releases/download/v${GIT_CREDENTIAL_OAUTH_VERSION:?}/git-credential-oauth_${GIT_CREDENTIAL_OAUTH_VERSION:?}_linux_${dpkgArch}.tar.gz | tar -C /usr/bin -xvzf - --wildcards --no-anchored git-credential-oauth
 fi
 
 # install gosu
@@ -50,6 +41,10 @@ chmod +x /usr/local/bin/gosu
 gosu nobody true
 
 if [[ "$VARIANT" == "full" ]]; then
+  # Installs latest Chromium package for testing
+  apt install -y chromium chromium-l10n ca-certificates fonts-freefont-ttf libnss3 libharfbuzz-bin
+  apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth
+
   # install docker client
   apt install -y \
       apt-transport-https \
@@ -71,9 +66,7 @@ if [[ "$VARIANT" == "full" ]]; then
     fi
     adduser node ${groupname%%:*} &>/dev/null || true
   done
-fi
 
-if [[ "$VARIANT" == "full" ]]; then
   # install docker compose
   apt install -y docker-compose-plugin
   curl -fsSL "https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -97,9 +90,7 @@ apt install -y python3-pip
 if [[ "$VARIANT" == "full" ]]; then
   # install graphviz and java for PlantUML
   apt install -y graphviz default-jre
-fi
 
-if [[ "$VARIANT" == "full" ]]; then
   # install LibreOffice
   if [ "$dpkgArch" = "arm64" ]; then
     LO_DIR_ARCH="aarch64"

@@ -219,7 +219,15 @@ EOF
   apt install -y  tzdata keyboard-configuration \
                   xvfb dbus-x11 x11vnc openssl xfce4 adwaita-icon-theme supervisor \
                   zenity \
+                  desktop-file-utils \
                   thunar-archive-plugin
+
+  # build the desktop MIME/scheme handler cache so the browser can hand custom URL
+  # schemes back to their apps - in particular claude:// so that Claude Desktop's
+  # browser-based OAuth login returns to the app once authentication completes.
+  # the claude-desktop package can't do this on install because desktop-file-utils
+  # (and thus its dpkg trigger) isn't present at that point.
+  update-desktop-database /usr/share/applications
 fi
 
 # hacky - to get chrome started properly in xfce environment, i.e. exo-open https://google.com.au

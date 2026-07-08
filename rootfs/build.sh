@@ -184,21 +184,27 @@ if [[ "$VARIANT" != "slim" ]]; then
   sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium.desktop
   sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium-url-handler.desktop
 
-  # install claude-desktop-bin (community Linux packaging: https://github.com/patrickjaja/claude-desktop-bin)
-  mkdir -p /etc/apt/keyrings
-  curl -fsSL https://patrickjaja.github.io/claude-desktop-bin/gpg-key.asc | gpg --dearmor -o /etc/apt/keyrings/claude-desktop.gpg
-  chmod 644 /etc/apt/keyrings/claude-desktop.gpg
+  # install claude-desktop (official Anthropic apt repo: https://code.claude.com/docs/en/desktop-linux)
+  curl -fsSLo /usr/share/keyrings/claude-desktop-archive-keyring.asc https://downloads.claude.ai/claude-desktop/key.asc
   cat > /etc/apt/sources.list.d/claude-desktop.sources <<EOF
 Types: deb
-URIs: https://patrickjaja.github.io/claude-desktop-bin/deb/
-Suites: ./
-Signed-By: /etc/apt/keyrings/claude-desktop.gpg
+URIs: https://downloads.claude.ai/claude-desktop/apt/stable
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/claude-desktop-archive-keyring.asc
 Architectures: ${dpkgArch}
 EOF
   apt update
-  apt install -y claude-desktop-bin
-  # fix claude-desktop to run in container as non-root
-  sed -i "/ELECTRON_ARGS=()/a ELECTRON_ARGS+=('--no-sandbox')" /usr/bin/claude-desktop
+  apt install -y claude-desktop
+  # the official package ships an electron binary at /usr/bin/claude-desktop (a 217MB copy
+  # of /usr/lib/claude-desktop/claude-desktop); replace it with a wrapper that forces
+  # --no-sandbox so it can run in the container (chromium refuses to start otherwise)
+  rm -f /usr/bin/claude-desktop
+  cat > /usr/bin/claude-desktop <<'EOF'
+#!/bin/sh
+exec /usr/lib/claude-desktop/claude-desktop --no-sandbox "$@"
+EOF
+  chmod +x /usr/bin/claude-desktop
 
   # install ttyd for terminal over http
   if [ "$dpkgArch" = "arm64" ]; then

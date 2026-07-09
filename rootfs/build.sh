@@ -197,12 +197,15 @@ EOF
   apt update
   apt install -y claude-desktop
   # the official package ships an electron binary at /usr/bin/claude-desktop (a 217MB copy
-  # of /usr/lib/claude-desktop/claude-desktop); replace it with a wrapper that forces
-  # --no-sandbox so it can run in the container (chromium refuses to start otherwise)
+  # of /usr/lib/claude-desktop/claude-desktop); replace it with a wrapper that forces:
+  #   --no-sandbox          so it can run in the container (chromium refuses otherwise)
+  #   --password-store=basic so chromium's safeStorage doesn't use gnome-keyring, which
+  #                          would otherwise pop an "Unlock Login Keyring" prompt in the
+  #                          remote vnc session (same workaround chrome uses below)
   rm -f /usr/bin/claude-desktop
   cat > /usr/bin/claude-desktop <<'EOF'
 #!/bin/sh
-exec /usr/lib/claude-desktop/claude-desktop --no-sandbox "$@"
+exec /usr/lib/claude-desktop/claude-desktop --no-sandbox --password-store=basic "$@"
 EOF
   chmod +x /usr/bin/claude-desktop
 

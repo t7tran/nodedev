@@ -225,6 +225,15 @@ EOF
                   desktop-file-utils \
                   thunar-archive-plugin
 
+  # install Xpra (https://github.com/Xpra-org/xpra) - serves individual X11
+  # applications (e.g. VSCodium, Google Chrome) to the client host over its
+  # built-in HTML5 client. Each app runs in its own seamless Xpra session
+  # launched by supervisord in the workspace pod.
+  curl -fsSL https://xpra.org/xpra.asc -o /usr/share/keyrings/xpra.asc
+  curl -fsSL https://raw.githubusercontent.com/Xpra-org/xpra/master/packaging/repos/bookworm/xpra.sources -o /etc/apt/sources.list.d/xpra.sources
+  apt update
+  apt install -y xpra xpra-html5
+
   # build the desktop MIME/scheme handler cache so the browser can hand custom URL
   # schemes back to their apps - in particular claude:// so that Claude Desktop's
   # browser-based OAuth login returns to the app once authentication completes.

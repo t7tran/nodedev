@@ -18,7 +18,7 @@ sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses dpkg hstr
-apt install -y git git-lfs curl jq dpkg iputils-ping
+apt install -y git git-lfs curl jq dpkg iputils-ping tmux
 
 # install yq
 curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_${dpkgArch} -o /usr/local/bin/yq
@@ -196,6 +196,9 @@ Architectures: ${dpkgArch}
 EOF
   apt update
   apt install -y claude-desktop
+  if [[ -f /etc/apt/sources.list.d/claude-desktop.list ]]; then
+    rm -f /etc/apt/sources.list.d/claude-desktop.sources
+  fi
   # the official package ships an electron binary at /usr/bin/claude-desktop (a 217MB copy
   # of /usr/lib/claude-desktop/claude-desktop); replace it with a wrapper that forces:
   #   --no-sandbox          so it can run in the container (chromium refuses otherwise)

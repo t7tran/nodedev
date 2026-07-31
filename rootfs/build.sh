@@ -2,12 +2,12 @@
 
 DOCKER_COMPOSE_VERSION=5.1.4
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
-LIBRE_OFFICE_VERSION=26.2.4
+LIBRE_OFFICE_VERSION=26.2.5 # https://download.documentfoundation.org/libreoffice/stable/
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
-SUPERCRONIC_VERSION=0.2.46
-TTYD_VERSION=1.7.7
+SUPERCRONIC_VERSION=0.2.48 # https://github.com/aptible/supercronic/releases
+TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
+YQ_VERSION=4.53.3 # https://github.com/mikefarah/yq/releases
 VARIANT=${1:-full}
-YQ_VERSION=4.53.3
 
 set -e
 

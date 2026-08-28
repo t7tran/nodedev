@@ -4,6 +4,7 @@ DOCKER_COMPOSE_VERSION=5.1.4
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
 LIBRE_OFFICE_VERSION=26.2.5 # https://download.documentfoundation.org/libreoffice/stable/
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
+POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
 SUPERCRONIC_VERSION=0.2.48 # https://github.com/aptible/supercronic/releases
 TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
 YQ_VERSION=4.53.3 # https://github.com/mikefarah/yq/releases
@@ -77,8 +78,19 @@ if [[ "$VARIANT" != "slim" ]]; then
   # install mysql client
   apt install -y default-mysql-client
 
-  # install postgresql client
-  apt install -y postgresql-client
+  apt install -y redis-server supervisor
+
+  # install postgresql server + client from the PGDG repo - debian bookworm only
+  # ships postgresql 15.
+  # keep dpkg from starting the daemons in the build container - there is no init
+  # system here and a failed invoke-rc.d would abort the build (set -e).
+  printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d
+  chmod +x /usr/sbin/policy-rc.d
+  curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /usr/share/keyrings/pgdg.asc
+  echo "deb [signed-by=/usr/share/keyrings/pgdg.asc] https://apt.postgresql.org/pub/repos/apt $(. /etc/os-release && echo ${VERSION_CODENAME:?})-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+  apt update
+  apt install -y postgresql-${POSTGRES_MAJOR_VERSION:?} postgresql-client-${POSTGRES_MAJOR_VERSION:?}
+  rm -f /usr/sbin/policy-rc.d
 fi
 
 # install sqlite3 for development
@@ -223,7 +235,7 @@ EOF
   # support for remote desktop via browser
   export DEBIAN_FRONTEND=noninteractive
   apt install -y  tzdata keyboard-configuration \
-                  xvfb dbus-x11 x11vnc openssl xfce4 adwaita-icon-theme supervisor \
+                  xvfb dbus-x11 x11vnc openssl xfce4 adwaita-icon-theme \
                   zenity \
                   desktop-file-utils \
                   thunar-archive-plugin

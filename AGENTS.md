@@ -12,6 +12,11 @@ script. The end product is a container that a developer runs against their own p
 ## Build & test
 
 There is no local build/test tooling; images are built via `docker buildx` (see `.github/workflows/`).
+CI is one reusable workflow, `.github/workflows/build-image.yml`, plus a thin caller per flavour that
+passes `node-version` / `variant` / `tag` / `cache-scope`. The reusable workflow builds each platform
+on a runner of its own architecture (`ubuntu-latest` for amd64, `ubuntu-24.04-arm` for arm64), pushes
+each by digest, and merges the digests into one multi-arch manifest — **no QEMU**. Keep it that way:
+emulating arm64 alongside amd64 on one runner exhausted its memory and broke `build.sh` mid-run.
 To build a variant locally, mirror what CI does:
 
 ```bash
@@ -26,7 +31,7 @@ docker buildx build --build-arg NODE_VERSION=lts --build-arg VARIANT=dev -t node
 ```
 
 `NODE_VERSION` accepts `lts`, `current`, or a major version (`18`, `20`, `22`) — it is passed straight
-to the `node:${NODE_VERSION}-bookworm-slim` base image tag. CI builds `linux/amd64,linux/arm64`;
+to the `node:${NODE_VERSION}-bookworm-slim` base image tag. CI builds `linux/amd64` and `linux/arm64`;
 `rootfs/build.sh` branches on `$dpkgArch` (`arm64` vs `amd64`) for several downloads, so any new tool
 install must handle both architectures.
 

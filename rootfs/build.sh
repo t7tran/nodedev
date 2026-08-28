@@ -14,6 +14,14 @@ set -e
 
 dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
 
+# everything below runs in a single RUN layer, so downloaded .debs would otherwise
+# pile up for the whole build; drop them as soon as each package is unpacked, and
+# retry transient index fetches rather than aborting the build under set -e.
+cat > /etc/apt/apt.conf.d/99nodedev <<'EOF'
+Acquire::Retries "3";
+Binary::apt::APT::Keep-Downloaded-Packages "false";
+EOF
+
 # activate contrib
 sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
@@ -189,7 +197,7 @@ if [[ "$VARIANT" != "slim" ]]; then
 
   # install codium
   curl -fsSL https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor -o /usr/share/keyrings/vscodium-archive-keyring.gpg
-  echo -e 'Types: deb\nURIs: https://download.vscodium.com/debs\nSuites: vscodium\nComponents: main\nArchitectures: amd64 arm64\nSigned-by: /usr/share/keyrings/vscodium-archive-keyring.gpg' > /etc/apt/sources.list.d/vscodium.sources
+  echo -e "Types: deb\nURIs: https://download.vscodium.com/debs\nSuites: vscodium\nComponents: main\nArchitectures: ${dpkgArch}\nSigned-by: /usr/share/keyrings/vscodium-archive-keyring.gpg" > /etc/apt/sources.list.d/vscodium.sources
   apt update
   apt install -y codium
   sed -i 's/"$ELECTRON" "$CLI"/"$ELECTRON" "$CLI" --no-sandbox/g' /usr/share/codium/bin/codium
@@ -246,6 +254,9 @@ EOF
   # launched by supervisord in the workspace pod.
   curl -fsSL https://xpra.org/xpra.asc -o /usr/share/keyrings/xpra.asc
   curl -fsSL https://raw.githubusercontent.com/Xpra-org/xpra/master/packaging/repos/bookworm/xpra.sources -o /etc/apt/sources.list.d/xpra.sources
+  # upstream declares `Architectures: amd64 arm64`; narrow it so apt doesn't fetch and
+  # parse the ~850KB index for the architecture this image isn't being built for
+  sed -i "s|^Architectures:.*|Architectures: ${dpkgArch}|" /etc/apt/sources.list.d/xpra.sources
   apt update
   apt install -y xpra xpra-html5
 

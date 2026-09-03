@@ -4,6 +4,7 @@ DOCKER_COMPOSE_VERSION=5.5.0
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
 LIBRE_OFFICE_VERSION=26.8.0 # https://download.documentfoundation.org/libreoffice/stable/
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
+GENIXCODE_VERSION=1.18.2500 # https://github.com/t7tran/opencode/releases
 POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
 SUPERCRONIC_VERSION=0.2.49 # https://github.com/aptible/supercronic/releases
 TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
@@ -231,6 +232,15 @@ EOF
 exec /usr/lib/claude-desktop/claude-desktop --no-sandbox --password-store=basic "$@"
 EOF
   chmod +x /usr/bin/claude-desktop
+
+  # install genixcode - the release tarball holds a single `genixcode` binary
+  if [ "$dpkgArch" = "arm64" ]; then
+    OPENCODE_ARCH=arm64
+  else
+    OPENCODE_ARCH=x64
+  fi
+  curl -fsSL https://github.com/t7tran/opencode/releases/download/v${GENIXCODE_VERSION:?}/opencode-linux-${OPENCODE_ARCH}.tar.gz | tar -C /usr/local/bin -xzf -
+  chmod +x /usr/local/bin/genixcode
 
   # install ttyd for terminal over http
   if [ "$dpkgArch" = "arm64" ]; then

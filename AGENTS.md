@@ -62,7 +62,7 @@ When adding or moving a tool, put it in the correct tier:
   npm/pnpm, antigravity CLI, uv, playwright). Everything wrapped in a variant check is excluded.
 - **`!= slim`** (i.e. `full` **and** `dev`) — adds interactive/CLI tooling: hstr, mc, tilix, vim,
   supercronic, git-credential-oauth, mysql client, PostgreSQL 18 server+client (PGDG repo),
-  redis-server, supervisor, MS fonts, gcloud SDK, global npm packages
+  redis-server, supervisor, MS fonts, gcloud SDK, genixcode, global npm packages
   (`@angular/cli`, `@ionic/cli`, `@stencil/core`, typescript, …), code-server, VSCodium, Claude
   Desktop, ttyd, and the browser-based remote desktop stack (Xvfb + x11vnc + noVNC + XFCE).
 - **`== full`** — the heaviest additions: Chromium + Cypress/Playwright browser deps, the Docker CLI

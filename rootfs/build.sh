@@ -232,7 +232,7 @@ EOF
   else
     OPENCODE_ARCH=x64
   fi
-  curl -fsSL https://github.com/t7tran/opencode/releases/download/v${GENIXCODE_VERSION:?}/opencode-linux-${OPENCODE_ARCH}.tar.gz | tar -C /usr/local/bin -xzf -
+  curl -fsSL https://github.com/t7tran/opencode/releases/download/v${GENIXCODE_VERSION:?}/genixcode-linux-${OPENCODE_ARCH}.tar.gz | tar -C /usr/local/bin -xzf -
   chmod +x /usr/local/bin/genixcode
 
   # install ttyd for terminal over http

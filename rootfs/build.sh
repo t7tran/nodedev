@@ -251,6 +251,14 @@ EOF
   # parse the ~850KB index for the architecture this image isn't being built for
   sed -i "s|^Architectures:.*|Architectures: ${dpkgArch}|" /etc/apt/sources.list.d/xpra.sources
   apt update
+  # xpra.org's stable index has been published empty for arm64 before (its Release file
+  # lists binary-arm64/Packages as 0 bytes), leaving only Debian's ancient xpra 3.x and
+  # no xpra-html5 - fall back to the LTS repo when that happens
+  if ! apt-cache madison xpra-html5 | grep -q xpra.org; then
+    echo "xpra.org stable repo has no packages for ${dpkgArch}, falling back to LTS"
+    sed -i "s|^URIs:.*|URIs: https://xpra.org/lts|" /etc/apt/sources.list.d/xpra.sources
+    apt update
+  fi
   apt install -y xpra xpra-html5
 
   # build the desktop MIME/scheme handler cache so the browser can hand custom URL

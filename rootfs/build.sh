@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_VERSION=5.5.0
+DOCKER_COMPOSE_VERSION=5.6.0 # https://github.com/docker/compose/releases
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
-LIBRE_OFFICE_VERSION=26.8.0 # https://download.documentfoundation.org/libreoffice/stable/
+LIBRE_OFFICE_VERSION=26.8.1 # https://download.documentfoundation.org/libreoffice/stable/
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
 SUPERCRONIC_VERSION=0.2.49 # https://github.com/aptible/supercronic/releases
@@ -119,7 +119,7 @@ if [[ "$VARIANT" == "full" ]]; then
     LO_DIR_ARCH="x86_64"
     LO_FILE_ARCH="x86-64"
   fi
-  curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/${LO_DIR_ARCH}/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_${LO_FILE_ARCH}_deb.tar.gz
+  curl -fsSLo /tmp/LibreOffice.tar.gz https://downloadarchive.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/${LO_DIR_ARCH}/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_${LO_FILE_ARCH}_deb.tar.gz
   # Install required dependencies for LibreOffice 7.0+
   apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
   cd /tmp

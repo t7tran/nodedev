@@ -132,6 +132,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # The plain tag is the flavour's moving "latest"; the dated tag pins that
+      # day's build (UTC), e.g. lts-dev and lts-dev-20261002. The plain tag gets
+      # the higher priority so it stays steps.meta.outputs.version.
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -141,7 +144,8 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=raw,value=${{ inputs.tag }}
+            type=raw,value=${{ inputs.tag }},priority=300
+            type=raw,value=${{ inputs.tag }}-{{date 'YYYYMMDD'}},priority=200
 
       - name: Create manifest list and push
         working-directory: /tmp/digests

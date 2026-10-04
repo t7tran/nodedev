@@ -58,8 +58,8 @@ Three files carry essentially all the logic:
 `build.sh` takes one argument, `VARIANT` (default `full`), and gates installs with three tiers.
 When adding or moving a tool, put it in the correct tier:
 
-- **slim** — the base. Only unconditional installs run (git, curl, jq, yq, gosu, sqlite3, python3-pip,
-  npm/pnpm, antigravity CLI, uv, playwright). Everything wrapped in a variant check is excluded.
+- **slim** — the base. Only unconditional installs run (git, curl, jq, yq, ripgrep, gosu, sqlite3, python3-pip,
+  npm/pnpm, uv, playwright). Everything wrapped in a variant check is excluded.
 - **`!= slim`** (i.e. `full` **and** `dev`) — adds interactive/CLI tooling: hstr, mc, tilix, vim,
   supercronic, git-credential-oauth, mysql client, PostgreSQL 18 server+client (PGDG repo),
   redis-server, supervisor, MS fonts, gcloud SDK, global npm packages

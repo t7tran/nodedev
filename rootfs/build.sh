@@ -27,7 +27,7 @@ sed -i 's/^Components: main$/& contrib/' /etc/apt/sources.list.d/debian.sources
 apt update && apt upgrade -y && apt autoremove -y
 
 # apk add git curl ncurses dpkg hstr
-apt install -y git git-lfs curl jq dpkg iputils-ping tmux
+apt install -y git git-lfs curl jq dpkg iputils-ping tmux ripgrep
 
 # install yq
 curl -fsSL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION:?}/yq_linux_${dpkgArch} -o /usr/local/bin/yq

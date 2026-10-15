@@ -7,7 +7,7 @@ NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
 SUPERCRONIC_VERSION=0.2.49 # https://github.com/aptible/supercronic/releases
 TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
-YQ_VERSION=4.53.6 # https://github.com/mikefarah/yq/releases
+YQ_VERSION=4.54.1 # https://github.com/mikefarah/yq/releases
 VARIANT=${1:-full}
 
 set -e
@@ -111,6 +111,12 @@ if [[ "$VARIANT" == "full" ]]; then
   # install graphviz and java for PlantUML
   apt install -y graphviz default-jre
 
+  # document tooling, so agents can read and convert Office files and PDFs:
+  # pandoc, poppler (pdftotext, pdftoppm, pdfinfo) and the python libraries.
+  # bookworm packages neither python-pptx nor pdfplumber, so all four come from pip.
+  apt install -y pandoc poppler-utils
+  pip install --no-cache-dir --break-system-packages python-docx openpyxl python-pptx pdfplumber
+
   # install LibreOffice
   if [ "$dpkgArch" = "arm64" ]; then
     LO_DIR_ARCH="aarch64"
@@ -119,13 +125,39 @@ if [[ "$VARIANT" == "full" ]]; then
     LO_DIR_ARCH="x86_64"
     LO_FILE_ARCH="x86-64"
   fi
-  curl -fsSLo /tmp/LibreOffice.tar.gz https://downloadarchive.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/${LO_DIR_ARCH}/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_${LO_FILE_ARCH}_deb.tar.gz
+  curl -fsSLo /tmp/LibreOffice.tar.gz https://download.documentfoundation.org/libreoffice/stable/${LIBRE_OFFICE_VERSION}/deb/${LO_DIR_ARCH}/LibreOffice_${LIBRE_OFFICE_VERSION}_Linux_${LO_FILE_ARCH}_deb.tar.gz
   # Install required dependencies for LibreOffice 7.0+
   apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6
   cd /tmp
   tar -zxvf LibreOffice.tar.gz
   cd LibreOffice*/DEBS
   dpkg -i *.deb
+  # the tarball's debs leave soffice in /opt only; put it on the PATH
+  ln -sf /opt/libreoffice${LIBRE_OFFICE_VERSION%.*}/program/soffice /usr/local/bin/soffice
+  /usr/local/bin/soffice --version
+
+  # soffice-convert FILTER OUTDIR FILE... (e.g. soffice-convert pdf . a.docx): headless
+  # conversion with a throwaway profile. a second soffice on the default profile hands its
+  # arguments to the one already running and exits, so --convert-to quietly produces
+  # nothing while still returning 0; a profile per run lets conversions run side by side.
+  cat > /usr/local/bin/soffice-convert <<'EOF'
+#!/bin/sh
+set -e
+if [ "$#" -lt 3 ]; then
+  echo "usage: ${0##*/} FILTER OUTDIR FILE...   e.g. ${0##*/} pdf . report.docx" >&2
+  exit 64
+fi
+filter="$1"
+outdir="$2"
+shift 2
+profile="$(mktemp -d /dev/shm/soffice-XXXXXX 2>/dev/null || mktemp -d)"
+status=0
+soffice --headless --norestore -env:UserInstallation="file://$profile" \
+  --convert-to "$filter" --outdir "$outdir" "$@" || status=$?
+rm -rf "$profile"
+exit "$status"
+EOF
+  chmod +x /usr/local/bin/soffice-convert
 fi
 
 if [[ "$VARIANT" != "slim" ]]; then
@@ -194,8 +226,8 @@ if [[ "$VARIANT" != "slim" ]]; then
   apt update
   apt install -y codium
   sed -i 's/"$ELECTRON" "$CLI"/"$ELECTRON" "$CLI" --no-sandbox/g' /usr/share/codium/bin/codium
-  sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium.desktop
-  sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g' /usr/share/applications/codium-url-handler.desktop
+  # desktop file names change between releases (codium*.desktop, com.visualstudio.CodeOSS*.desktop), so match on content
+  grep -l 'Exec=/usr/share/codium/codium' /usr/share/applications/*.desktop | xargs -r sed -i 's#Exec=/usr/share/codium/codium#Exec=/usr/share/codium/codium --no-sandbox#g'
 
   # install claude-desktop (official Anthropic apt repo: https://code.claude.com/docs/en/desktop-linux)
   curl -fsSLo /usr/share/keyrings/claude-desktop-archive-keyring.asc https://downloads.claude.ai/claude-desktop/key.asc

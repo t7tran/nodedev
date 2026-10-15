@@ -66,10 +66,12 @@ When adding or moving a tool, put it in the correct tier:
   (`@angular/cli`, `@ionic/cli`, `@stencil/core`, typescript, …), code-server, VSCodium, Claude
   Desktop, ttyd, and the browser-based remote desktop stack (Xvfb + x11vnc + noVNC + XFCE).
 - **`== full`** — the heaviest additions: Chromium + Cypress/Playwright browser deps, the Docker CLI
-  (+ docker-compose), graphviz/JRE for PlantUML, LibreOffice, cloudflared, tmate.
+  (+ docker-compose), graphviz/JRE for PlantUML, cloudflared, tmate, and document tooling for agents:
+  pandoc, poppler-utils, LibreOffice (`soffice` on the PATH, plus `soffice-convert`, which gives each
+  conversion its own profile), and python-docx, openpyxl, python-pptx and pdfplumber from pip.
 
 Note the guards are literal string comparisons. `dev` gets everything `!= slim` provides but **not**
-the `== full` block — so, e.g., Docker CLI and LibreOffice are full-only.
+the `== full` block — so, e.g., the Docker CLI, LibreOffice and the document tooling are full-only.
 
 ### Runtime model
 

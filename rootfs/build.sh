@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_VERSION=5.6.0 # https://github.com/docker/compose/releases
+DOCKER_COMPOSE_VERSION=5.7.0 # https://github.com/docker/compose/releases
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
-LIBRE_OFFICE_VERSION=26.8.1 # https://download.documentfoundation.org/libreoffice/stable/
+LIBRE_OFFICE_VERSION=26.8.2 # https://download.documentfoundation.org/libreoffice/stable/
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
-SUPERCRONIC_VERSION=0.2.49 # https://github.com/aptible/supercronic/releases
+SUPERCRONIC_VERSION=0.2.51 # https://github.com/aptible/supercronic/releases
 TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
 YQ_VERSION=4.54.1 # https://github.com/mikefarah/yq/releases
 VARIANT=${1:-full}
@@ -112,10 +112,11 @@ if [[ "$VARIANT" == "full" ]]; then
   apt install -y graphviz default-jre
 
   # document tooling, so agents can read and convert Office files and PDFs:
-  # pandoc, poppler (pdftotext, pdftoppm, pdfinfo) and the python libraries.
-  # bookworm packages neither python-pptx nor pdfplumber, so all four come from pip.
+  # pandoc, poppler (pdftotext, pdftoppm, pdfinfo) and the python libraries, with
+  # matplotlib for charts. bookworm packages neither python-pptx nor pdfplumber, so all
+  # five come from pip.
   apt install -y pandoc poppler-utils
-  pip install --no-cache-dir --break-system-packages python-docx openpyxl python-pptx pdfplumber
+  pip install --no-cache-dir --break-system-packages python-docx openpyxl python-pptx pdfplumber matplotlib
 
   # install LibreOffice
   if [ "$dpkgArch" = "arm64" ]; then

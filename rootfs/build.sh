@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_VERSION=5.7.0 # https://github.com/docker/compose/releases
+DOCKER_COMPOSE_VERSION=5.7.1 # https://github.com/docker/compose/releases
 GIT_CREDENTIAL_OAUTH_VERSION=0.17.2-p.1
-LIBRE_OFFICE_VERSION=26.8.2 # https://download.documentfoundation.org/libreoffice/stable/
+LIBRE_OFFICE_VERSION=26.8.3 # https://download.documentfoundation.org/libreoffice/stable/
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
 SUPERCRONIC_VERSION=0.2.51 # https://github.com/aptible/supercronic/releases
 TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
-YQ_VERSION=4.54.1 # https://github.com/mikefarah/yq/releases
+YQ_VERSION=4.54.3 # https://github.com/mikefarah/yq/releases
 VARIANT=${1:-full}
 
 set -e

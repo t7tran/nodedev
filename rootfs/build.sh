@@ -6,7 +6,6 @@ LIBRE_OFFICE_VERSION=26.8.3 # https://download.documentfoundation.org/libreoffic
 NODE_MAJOR_VERSION=`node -v | cut -d. -f1 | sed 's/v//'`
 POSTGRES_MAJOR_VERSION=18 # https://apt.postgresql.org/pub/repos/apt/dists/
 SUPERCRONIC_VERSION=0.2.51 # https://github.com/aptible/supercronic/releases
-TTYD_VERSION=1.7.7 # https://github.com/tsl0922/ttyd/releases
 YQ_VERSION=4.54.3 # https://github.com/mikefarah/yq/releases
 VARIANT=${1:-full}
 
@@ -257,14 +256,6 @@ EOF
 exec /usr/lib/claude-desktop/claude-desktop --no-sandbox --password-store=basic "$@"
 EOF
   chmod +x /usr/bin/claude-desktop
-
-  # install ttyd for terminal over http
-  if [ "$dpkgArch" = "arm64" ]; then
-    curl -fsSLo /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION:?}/ttyd.aarch64
-  else
-    curl -fsSLo /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION:?}/ttyd.x86_64
-  fi
-  chmod +x /usr/local/bin/ttyd
 
   # support for remote desktop via browser
   export DEBIAN_FRONTEND=noninteractive

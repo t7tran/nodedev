@@ -64,7 +64,7 @@ When adding or moving a tool, put it in the correct tier:
   supercronic, git-credential-oauth, mysql client, PostgreSQL 18 server+client (PGDG repo),
   redis-server, supervisor, MS fonts, gcloud SDK, global npm packages
   (`@angular/cli`, `@ionic/cli`, `@stencil/core`, typescript, …), code-server, VSCodium, Claude
-  Desktop, ttyd, and the browser-based remote desktop stack (Xvfb + x11vnc + noVNC + XFCE).
+  Desktop, and the browser-based remote desktop stack (Xvfb + x11vnc + noVNC + XFCE).
 - **`== full`** — the heaviest additions: Chromium + Cypress/Playwright browser deps, the Docker CLI
   (+ docker-compose), graphviz/JRE for PlantUML, cloudflared, tmate, and document tooling for agents:
   pandoc, poppler-utils, LibreOffice (`soffice` on the PATH, plus `soffice-convert`, which gives each

@@ -30,7 +30,7 @@ docker buildx build --build-arg NODE_VERSION=lts --build-arg VARIANT=slim -t nod
 docker buildx build --build-arg NODE_VERSION=lts --build-arg VARIANT=dev -t nodedev:lts-dev .
 ```
 
-`NODE_VERSION` accepts `lts`, `current`, or a major version (`18`, `20`, `22`) — it is passed straight
+`NODE_VERSION` accepts `lts`, `current`, or a major version (`18`, `20`, `22`, `24`) — it is passed straight
 to the `node:${NODE_VERSION}-bookworm-slim` base image tag. CI builds `linux/amd64` and `linux/arm64`;
 `rootfs/build.sh` branches on `$dpkgArch` (`arm64` vs `amd64`) for several downloads, so any new tool
 install must handle both architectures.
